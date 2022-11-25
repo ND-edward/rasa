@@ -1,0 +1,4 @@
+models/*
+actions/*
+.gitattributes
+rasa-values.yaml

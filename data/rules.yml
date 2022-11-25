@@ -1,0 +1,74 @@
+version: "3.1"
+
+rules:
+
+- rule: Greet
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - action: utter_ask_question
+
+- rule: Say goodbye anytime the user says goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Say 'I am a bot' anytime the user challenges
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+- rule: Activate form
+  steps:
+  - intent: inquiry_skin_problem
+  - action: action_reset_product_or_treatment
+  - action: skin_form
+  - active_loop: skin_form
+
+- rule: Interruption in form
+  condition:
+  # Condition that form is active.
+  - active_loop: skin_form
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+  # Return to form
+  - action: skin_form
+  - active_loop: skin_form
+
+- rule: Users want to change their skin type
+  condition:
+  - active_loop: skin_form
+  steps:
+  - intent: inform_change_skin_type
+  - action: utter_restate_skin_type
+  - action: action_change_skin_type
+  # Return to form
+  - action: skin_form
+  - active_loop: skin_form
+
+- rule: Submit form
+  condition:
+  # Condition that form is active.
+  - active_loop: skin_form
+  steps:
+  # Form is deactivated
+  - action: skin_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  # The actions we want to run when the form is submitted.
+  - action: utter_submit_form
+  - action: action_product_treatment_carousel
+  - action: action_inquiry_more_details
+
+- rule: Users do not need more details and say goodbye
+  steps:
+  - action: action_inquiry_more_details
+  - intent: do_not_need_more_details
+  - action: utter_hopes_can_help_you
+
+- rule: Respond to out of scope questions
+  steps:
+  - intent: out_of_scope
+  - action: utter_outofscope 

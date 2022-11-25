@@ -1,0 +1,135 @@
+version: '3.1'
+intents:
+- affirm
+- bot_challenge
+- deny
+- do_not_need_more_details
+- goodbye
+- greet
+- inform_change_skin_type
+- inform_product_treatment
+- inform_skin_type
+- inquiry_product_quantity
+- inquiry_product_treatment_effect
+- inquiry_skin_problem
+- out_of_scope
+- recommend_product_usage
+- stop
+entities:
+- skin_problem
+- skin_type
+slots:
+  first_skin_type:
+    type: categorical
+    values:
+    - 混合性
+    - 油性
+    - 乾性
+    - 唔知
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: skin_type
+      intent:
+      - inform_skin_type
+  change_skin_type:
+    type: categorical
+    values:
+    - 混合性
+    - 油性
+    - 乾性
+    - 唔知
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: skin_type
+      intent:
+      - inform_change_skin_type
+  inform_skin_problem:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: skin_problem
+      intent:
+      - inquiry_skin_problem
+  product_or_treatment:
+    type: categorical
+    values:
+    - 產品
+    - 療程
+    influence_conversation: true
+    mappings:
+    - type: from_text
+      intent: inform_product_treatment
+forms:
+  skin_form:
+    required_slots:
+    - first_skin_type
+    - product_or_treatment
+responses:
+  utter_greet:
+  - text: 你好! 我係您嘅智能助理Graci🧚🏻，可以解答關於產品/療程嘅問題
+  utter_ask_question:
+  - text: 請問有咩幫到您?
+  utter_goodbye:
+  - text: 再見，希望你有美好嘅一日😊
+  - text: ByeBye，歡迎再搵我傾計😀
+  utter_ask_skin_form_first_skin_type:
+  - text: 了解! 首先想請問您係咩膚質架?
+    buttons:
+    - title: 混合性
+      payload: /inform_skin_type{{"skin_type":"混合性"}}
+    - title: 油性
+      payload: /inform_skin_type{{"skin_type":"油性"}}
+    - title: 乾性
+      payload: /inform_skin_type{{"skin_type":"乾性"}}
+    - title: 唔知
+      payload: /inform_skin_type{{"skin_type":"唔知"}}
+  utter_ask_skin_form_product_or_treatment:
+  - text: 您主要想了解產品定療程?
+    buttons:
+    - title: 產品
+      payload: 產品
+    - title: 療程
+      payload: 療程
+  utter_submit_form:
+  - condition:
+    - type: slot
+      name: inform_skin_problem
+      value: 防曬
+    text: 努力搵緊符合{first_skin_type}嘅防曬產品，請等一等🏃🏻‍♀️
+  - condition:
+    - type: slot
+      name: first_skin_type
+      value: 唔知
+    text: 或者點擊下面連結，識別下自己係屬於咩肌膚😚
+  - text: 努力搵緊符合{first_skin_type}嘅{product_or_treatment}，請等一等🏃🏻‍♀️
+  utter_restate_skin_type:
+  - text: OK❗膚質已更改為{change_skin_type}
+  utter_hopes_can_help_you:
+  - text: 希望可以解答到你嘅問題啦❤再見
+  utter_ask_continue:
+  - text: 您係咪肯定?🙈
+  utter_outofscope:
+  - text: 唔好意思，我唔係好知你問緊乜🙈或者試下轉個講法呀🙇🏻‍♀️
+  utter_iamabot:
+  - text: 我係機械人!
+actions:
+- action_change_skin_type
+- action_inquiry_more_details
+- action_intro_product_treatment_effect
+- action_product_quantity
+- action_product_treatment_carousel
+- action_recommend_product_usage
+- action_reset_product_or_treatment
+- utter_ask_continue
+- utter_ask_question
+- utter_goodbye
+- utter_greet
+- utter_hopes_can_help_you
+- utter_restate_skin_type
+- utter_submit_form
+- validate_skin_form
+session_config:
+  session_expiration_time: 0
+  carry_over_slots_to_new_session: true

@@ -1,0 +1,317 @@
+version: "3.1"
+
+# Test句: Graci, 我近來皮膚有點乾燥，怎麼辦?
+# 唔好意思,Graci,我膚質應該係混合性先啱
+# 可唔可以推薦啲防曬產品俾我?
+
+stories:
+
+- story: Users want to know more details in product or treatment
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - action: utter_ask_question
+  - intent: inquiry_skin_problem
+  - action: action_reset_product_or_treatment
+  - action: skin_form
+  - active_loop: skin_form
+  - slot_was_set:
+    - requested_slot: first_skin_type
+  - or:
+    - slot_was_set:
+      - first_skin_type: 混合性
+    - slot_was_set:
+      - first_skin_type: 油性
+    - slot_was_set:
+      - first_skin_type: 乾性
+  - slot_was_set:
+    - requested_slot: product_or_treatment
+  - or:
+    - slot_was_set:
+      - product_or_treatment: 產品
+    - slot_was_set:
+      - product_or_treatment: 療程
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_submit_form
+  - action: action_product_treatment_carousel
+  - action: action_inquiry_more_details
+  - checkpoint: check_inquiry_details
+
+- story: Users want to change their skin type
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - action: utter_ask_question
+  - intent: inquiry_skin_problem
+    entities:
+    - skin_problem: 乾燥
+  - slot_was_set:
+    - inform_skin_problem: 乾燥
+  - action: action_reset_product_or_treatment
+  - slot_was_set:
+    - product_or_treatment: null
+  - action: skin_form
+  - active_loop: skin_form
+  - slot_was_set:
+    - product_or_treatment: null
+  - slot_was_set:
+    - requested_slot: first_skin_type
+  - slot_was_set:
+    - first_skin_type: 乾性
+  - slot_was_set:
+    - first_skin_type: 乾性
+  - slot_was_set:
+    - requested_slot: product_or_treatment
+  - intent: inform_change_skin_type
+    entities:
+    - skin_type: 混合性
+  - slot_was_set:
+    - change_skin_type: 混合性
+  - action: utter_restate_skin_type
+  - action: action_change_skin_type
+  - slot_was_set:
+    - first_skin_type: 混合性
+  - action: skin_form
+  - slot_was_set:
+    - requested_slot: product_or_treatment
+  - slot_was_set:
+    - product_or_treatment: 產品
+  - slot_was_set:
+    - product_or_treatment: 產品
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_submit_form
+  - action: action_product_treatment_carousel
+  - action: action_inquiry_more_details
+  - intent: inquiry_product_treatment_effect
+  - action: action_intro_product_treatment_effect
+  - action: action_inquiry_more_details
+  - intent: inquiry_product_quantity
+  - action: action_product_quantity
+  - action: action_inquiry_more_details
+  - intent: recommend_product_usage
+  - action: action_recommend_product_usage
+  - action: action_inquiry_more_details
+  - intent: do_not_need_more_details
+  - action: utter_hopes_can_help_you
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: Users wants to know the product or treatment effect
+  steps:
+  - checkpoint: check_inquiry_details
+  - intent: inquiry_product_treatment_effect
+  - action: action_intro_product_treatment_effect
+  - action: action_inquiry_more_details
+
+- story: Users wants to know the recommend procedure of using product
+  steps:
+  - checkpoint: check_inquiry_details
+  - intent: recommend_product_usage
+  - action: action_recommend_product_usage
+  - action: action_inquiry_more_details
+
+- story: Users wants to know the product quantity
+  steps:
+  - checkpoint: check_inquiry_details
+  - intent: inquiry_product_quantity
+  - action: action_product_quantity
+  - action: action_inquiry_more_details
+
+- story: User doesn't want to fill the form
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - action: utter_ask_question
+  - intent: inquiry_skin_problem
+  - action: action_reset_product_or_treatment
+  - action: skin_form
+  - active_loop: skin_form
+  - slot_was_set:
+    - requested_slot: first_skin_type
+  - or:
+    - slot_was_set:
+      - first_skin_type: 混合性
+    - slot_was_set:
+      - first_skin_type: 油性
+    - slot_was_set:
+      - first_skin_type: 乾性
+  - intent: stop
+  - action: utter_ask_continue
+  - checkpoint: check_continue_fill_form
+
+- story: User really wants to stop filling the form
+  steps:
+  - checkpoint: check_continue_fill_form
+  - or:
+    - intent: stop
+    - intent: affirm
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_inquiry_more_details
+
+- story: User want to stop filling the form but continue
+  steps:
+  - checkpoint: check_continue_fill_form
+  - intent: deny
+  - action: skin_form
+  - active_loop: skin_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_submit_form
+  - action: action_product_treatment_carousel
+  - action: action_inquiry_more_details
+
+- story: User continue to fill the form at first then do not want to continue
+  steps:
+  - checkpoint: check_continue_fill_form
+  - intent: deny
+  - action: skin_form
+  - active_loop: skin_form
+  - intent: stop
+  - action: utter_ask_continue
+  - or:
+    - intent: stop
+    - intent: affirm
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_inquiry_more_details
+
+- story: User does not want to fill form after informing skin type
+  steps:
+  - intent: inquiry_skin_problem
+  - action: action_reset_product_or_treatment
+  - action: skin_form
+  - active_loop: skin_form
+  - slot_was_set:
+    - requested_slot: first_skin_type
+  - or:
+    - slot_was_set:
+      - first_skin_type: 混合性
+    - slot_was_set:
+      - first_skin_type: 油性
+    - slot_was_set:
+      - first_skin_type: 乾性
+  - slot_was_set:
+    - requested_slot: product_or_treatment
+  - intent: stop
+  - action: utter_ask_continue
+  - checkpoint: check_inform_skin_type_continue_fill_form
+
+- story: User really wants to stop filling the form after informing skin type
+  steps:
+  - checkpoint: check_inform_skin_type_continue_fill_form
+  - or:
+    - intent: stop
+    - intent: affirm
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_inquiry_more_details
+
+- story: User want to stop filling the form after informing skin type but continue
+  steps:
+  - checkpoint: check_inform_skin_type_continue_fill_form
+  - intent: deny
+  - action: skin_form
+  - active_loop: skin_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_submit_form
+  - action: action_product_treatment_carousel
+  - action: action_inquiry_more_details
+
+- story: User continue to fill the form after informing skin type at first then do not want to continue
+  steps:
+  - checkpoint: check_inform_skin_type_continue_fill_form
+  - intent: deny
+  - action: skin_form
+  - active_loop: skin_form
+  - intent: stop
+  - action: utter_ask_continue
+  - or:
+    - intent: stop
+    - intent: affirm
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_inquiry_more_details
+
+- story: User does not want to fill form after changing skin type
+  steps:
+  - intent: inquiry_skin_problem
+  - action: action_reset_product_or_treatment
+  - action: skin_form
+  - active_loop: skin_form
+  - slot_was_set:
+    - requested_slot: first_skin_type
+  - or:
+    - slot_was_set:
+      - first_skin_type: 混合性
+    - slot_was_set:
+      - first_skin_type: 油性
+    - slot_was_set:
+      - first_skin_type: 乾性
+  - intent: inform_change_skin_type
+  - action: utter_restate_skin_type
+  - action: action_change_skin_type
+  - action: skin_form
+  - active_loop: skin_form
+  - slot_was_set:
+    - requested_slot: product_or_treatment
+  - intent: stop
+  - action: utter_ask_continue
+  - checkpoint: check_change_skin_type_continue_fill_form
+
+- story: User really wants to stop filling the form after changing skin type
+  steps:
+  - checkpoint: check_change_skin_type_continue_fill_form
+  - or:
+    - intent: stop
+    - intent: affirm
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_inquiry_more_details
+
+- story: User want to stop filling the form after changing skin type but continue
+  steps:
+  - checkpoint: check_change_skin_type_continue_fill_form
+  - intent: deny
+  - action: skin_form
+  - active_loop: skin_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_submit_form
+  - action: action_product_treatment_carousel
+  - action: action_inquiry_more_details
+
+- story: User continue to fill the form after changing skin type at first then do not want to continue
+  steps:
+  - checkpoint: check_change_skin_type_continue_fill_form
+  - intent: deny
+  - action: skin_form
+  - active_loop: skin_form
+  - intent: stop
+  - action: utter_ask_continue
+  - or:
+    - intent: stop
+    - intent: affirm
+  - action: action_deactivate_loop
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_inquiry_more_details
