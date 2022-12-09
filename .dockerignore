@@ -2,3 +2,7 @@ models/*
 actions/*
 .gitattributes
 rasa-values.yaml
+.config
+.git
+.keras
+.gitignore
