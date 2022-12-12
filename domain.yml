@@ -16,8 +16,8 @@ intents:
 - recommend_product_usage
 - stop
 entities:
-- skin_problem
 - skin_type
+- skin_problem
 slots:
   first_skin_type:
     type: categorical
@@ -68,12 +68,12 @@ forms:
     - product_or_treatment
 responses:
   utter_greet:
-  - text: 你好! 我係您嘅智能助理Graci🧚🏻，可以解答關於產品/療程嘅問題
+  - text: 你好! 我係您嘅智能助理Graci，可以解答關於產品/療程嘅問題
   utter_ask_question:
   - text: 請問有咩幫到您?
   utter_goodbye:
-  - text: 再見，希望你有美好嘅一日😊
-  - text: ByeBye，歡迎再搵我傾計😀
+  - text: 再見，希望你有美好嘅一日
+  - text: ByeBye，歡迎再搵我傾計
   utter_ask_skin_form_first_skin_type:
   - text: 了解! 首先想請問您係咩膚質架?
     buttons:
@@ -86,7 +86,7 @@ responses:
     - title: 唔知
       payload: /inform_skin_type{{"skin_type":"唔知"}}
   utter_ask_skin_form_product_or_treatment:
-  - text: 您主要想了解產品定療程?
+  - text: 已紀錄膚質為{first_skin_type}，您會想了解產品定療程呢?
     buttons:
     - title: 產品
       payload: 產品
@@ -97,23 +97,23 @@ responses:
     - type: slot
       name: inform_skin_problem
       value: 防曬
-    text: 努力搵緊符合{first_skin_type}嘅防曬產品，請等一等🏃🏻‍♀️
+    text: 努力搵緊符合{first_skin_type}嘅防曬產品，請等一等
   - condition:
     - type: slot
       name: first_skin_type
       value: 唔知
-    text: 或者點擊下面連結，識別下自己係屬於咩肌膚😚
-  - text: 努力搵緊符合{first_skin_type}嘅{product_or_treatment}，請等一等🏃🏻‍♀️
+    text: 或者點擊下面連結，識別下自己係屬於咩肌膚
+  - text: 努力搵緊符合{first_skin_type}嘅{product_or_treatment}，請等一等
   utter_restate_skin_type:
-  - text: OK❗膚質已更改為{change_skin_type}
+  - text: OK!膚質已更改為{change_skin_type}
   utter_hopes_can_help_you:
-  - text: 希望可以解答到你嘅問題啦❤再見
+  - text: 希望可以解答到你嘅問題啦!ByeBye!
   utter_ask_continue:
-  - text: 您係咪肯定?🙈
+  - text: 您係咪肯定?
   utter_outofscope:
-  - text: 唔好意思，我唔係好知你問緊乜🙈或者試下轉個講法呀🙇🏻‍♀️
+  - text: 唔好意思，我唔係好知你問緊乜，或者試下轉個講法呀
   utter_iamabot:
-  - text: 我係機械人!
+  - text: 我係Graci智能助理!
 actions:
 - action_change_skin_type
 - action_inquiry_more_details

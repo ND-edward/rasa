@@ -7,7 +7,6 @@ nlu:
     - 早晨
     - 午安
     - 晚上好
-    - 你好，有咩幫到你
     - hello
     - hi
     - hello there
@@ -23,6 +22,7 @@ nlu:
     - bye
     - goodbye
     - bye bye
+    - 拜拜
 - intent: affirm
   examples: |
     - 係
@@ -47,7 +47,6 @@ nlu:
     - 錯
     - 不對
     - 都係繼續
-
 - intent: stop
   examples: |
     - 停
@@ -86,7 +85,8 @@ nlu:
     - 點樣揀枝我啱用嘅[防曬](skin_problem)?
     - 我想問關於[防曬]嘅問題{"entity":"skin_problem"}
     - 可以推介啲啱我用嘅[防曬](skin_problem)產品?
-    - Graci, 我近來皮膚有點[乾燥](skin_problem)，怎麼辦?
+    - [保濕](skin_problem)
+    - [保濕](skin_problem)
 - intent: inform_skin_type
   examples: |
     - [混合性](skin_type)
@@ -144,6 +144,7 @@ nlu:
     - 可以俾到8枝我?
     - 庫存有幾多?
     - 有幾多貨可以俾我?
+    - 推薦產品庫存
 - intent: out_of_scope
   examples: |
     - 可以預約?

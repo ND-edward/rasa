@@ -14,19 +14,6 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.forms import FormValidationAction
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
-#
-# class ActionHelloWorld(Action):
-#
-#     def name(self) -> Text:
-#         return "action_hello_world"
-#
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#
-#         dispatcher.utter_message(text="Hello World!")
-#
-#         return []
 
 product_df = pd.read_excel("C:/Users/Techteam/Desktop/gratus_content/rasa/product.xlsx")
 treatment_df = pd.read_excel("C:/Users/Techteam/Desktop/gratus_content/rasa/treatment.xlsx")
@@ -48,6 +35,21 @@ class ValidateSkinForm(FormValidationAction):
             updated_slots.remove("product_or_treatment")
         
         return updated_slots
+
+    # def validate_first_skin_type(
+    #     self,
+    #     slot_value: Any,
+    #     dispatcher: "CollectingDispatcher",
+    #     tracker: "Tracker",
+    #     domain: "DomainDict",
+    # ) -> Dict[Text, Any]:
+
+    #     skin_type = tracker.get_slot("first_skin_type")
+    #     message = f"確認您嘅膚質為{skin_type}"
+
+    #     dispatcher.utter_message(text=message)
+
+    #     return {"first_skin_type": skin_type}
 
 class ActionCarousel(Action):
     def name(self) -> Text:
@@ -363,21 +365,21 @@ class IntroProductTreatmentAction(Action):
 
                     mixed_skin_product_df = moisture_product_df[moisture_product_df.skin_type == "mixed"]
                     mixed_product = dict(zip(mixed_skin_product_df['product'], mixed_skin_product_df.effect))
-                    message = f'1️⃣{list(mixed_product.keys())[0]}: {list(mixed_product.values())[0]}\n\n2️⃣{list(mixed_product.keys())[1]}: {list(mixed_product.values())[1]}'
+                    message = f'1{list(mixed_product.keys())[0]}: {list(mixed_product.values())[0]}\n\n2️{list(mixed_product.keys())[1]}: {list(mixed_product.values())[1]}'
                     dispatcher.utter_message(text=message)
                 
                 elif tracker.get_slot("first_skin_type") == "油性":
 
                     oil_skin_product_df = moisture_product_df[moisture_product_df.skin_type == "oil"]
                     oil_product = dict(zip(oil_skin_product_df['product'], oil_skin_product_df.effect))
-                    message = f'1️⃣{list(oil_product.keys())[0]}: {list(oil_product.values())[0]}\n\n2️⃣{list(oil_product.keys())[1]}: {list(oil_product.values())[1]}'
+                    message = f'1️{list(oil_product.keys())[0]}: {list(oil_product.values())[0]}\n\n2️{list(oil_product.keys())[1]}: {list(oil_product.values())[1]}'
                     dispatcher.utter_message(text=message)
 
                 elif tracker.get_slot("first_skin_type") == "乾性":
                 
                     dry_skin_product_df = moisture_product_df[moisture_product_df.skin_type == "dry"]
                     dry_product = dict(zip(dry_skin_product_df['product'], dry_skin_product_df.effect))
-                    message = f'1️⃣{list(dry_product.keys())[0]}: {list(dry_product.values())[0]}\n\n2️⃣{list(dry_product.keys())[1]}: {list(dry_product.values())[1]}'
+                    message = f'1️{list(dry_product.keys())[0]}: {list(dry_product.values())[0]}\n\n2️{list(dry_product.keys())[1]}: {list(dry_product.values())[1]}'
                     dispatcher.utter_message(text=message)
         
         elif tracker.get_slot("product_or_treatment") == "療程":
